@@ -1108,6 +1108,7 @@ class PDFDocumentProxy {
  * @property {string} fontName - Font name used by PDF.js for converted font.
  * @property {boolean} hasEOL - Indicating if the text content is followed by a
  *   line-break.
+ * @property {[number,number,number]} colorFill - Color of the text.
  */
 
 /**

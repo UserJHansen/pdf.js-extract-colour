@@ -724,6 +724,7 @@ class PartialEvaluator {
         [imgData],
         optionalContent
       );
+      debugger;
       return;
     }
 
@@ -2300,6 +2301,8 @@ class PartialEvaluator {
       transform: null,
       fontName: null,
       hasEOL: false,
+
+      fillColor: stateManager.state.fillColor,
     };
 
     // Use a circular buffer (length === 2) to save the last chars in the
@@ -2376,7 +2379,12 @@ class PartialEvaluator {
     const emptyXObjectCache = new LocalImageCache();
     const emptyGStateCache = new LocalGStateCache();
 
-    const preprocessor = new EvaluatorPreprocessor(stream, xref, stateManager);
+    const preprocessor = new CustomEvaluatorPreprocessor(
+      stream,
+      xref,
+      stateManager,
+      resources
+    );
 
     let textState;
 
@@ -2411,6 +2419,7 @@ class PartialEvaluator {
 
     function ensureTextContentItem() {
       if (textContentItem.initialized) {
+        textContentItem.fillColor = stateManager.state.fillColor;
         return textContentItem;
       }
       const font = textState.font,
@@ -2462,6 +2471,7 @@ class PartialEvaluator {
         textState.fontSize * SPACE_IN_FLOW_MAX_FACTOR;
 
       textContentItem.hasEOL = false;
+      textContentItem.fillColor = stateManager.state.fillColor;
 
       textContentItem.initialized = true;
       return textContentItem;
@@ -2506,6 +2516,7 @@ class PartialEvaluator {
         transform: textChunk.transform,
         fontName: textChunk.fontName,
         hasEOL: textChunk.hasEOL,
+        fillColor: textState.fillColor,
       };
     }
 
@@ -2673,6 +2684,7 @@ class PartialEvaluator {
               transform: textContentItem.prevTransform,
               fontName: textContentItem.fontName,
               hasEOL: false,
+              fillColor: textState.fillColor,
             });
           } else {
             textContentItem.height += advanceY;
@@ -2730,6 +2742,7 @@ class PartialEvaluator {
             transform: textContentItem.prevTransform,
             fontName: textContentItem.fontName,
             hasEOL: false,
+            fillColor: textState.fillColor,
           });
         } else {
           textContentItem.width += advanceX;
@@ -2862,6 +2875,7 @@ class PartialEvaluator {
           transform: getCurrentTextTransform(),
           fontName: textState.font.loadedName,
           hasEOL: true,
+          fillColor: textState.fillColor,
         });
       }
     }
@@ -2898,6 +2912,7 @@ class PartialEvaluator {
         transform: transf || getCurrentTextTransform(),
         fontName,
         hasEOL: false,
+        fillColor: textState.fillColor,
       });
 
       return true;
@@ -4909,6 +4924,44 @@ class EvaluatorPreprocessor {
         break;
       case OPS.transform:
         this.stateManager.transform(args);
+        break;
+    }
+  }
+}
+
+// Taken from SO with modifications: https://stackoverflow.com/a/27909703
+class CustomEvaluatorPreprocessor extends EvaluatorPreprocessor {
+  constructor(stream, xref, stateManager, resources) {
+    super(stream, xref, stateManager);
+    this.resources = resources;
+    this.xref = xref;
+
+    // set initial color state
+    var state = this.stateManager.state;
+    state.textRenderingMode = TextRenderingMode.FILL;
+    state.fillColorSpace = ColorSpace.singletons.gray;
+    state.fillColor = [0, 0, 0];
+  }
+
+  preprocessCommand(fn, args) {
+    EvaluatorPreprocessor.prototype.preprocessCommand.call(this, fn, args);
+    var state = this.stateManager.state;
+    switch (fn) {
+      case OPS.setFillColor:
+        var cs = state.fillColorSpace;
+        state.fillColor = cs.getRgb(args, 0);
+        break;
+      case OPS.setFillGray:
+        state.fillColorSpace = ColorSpace.singletons.gray;
+        state.fillColor = ColorSpace.singletons.gray.getRgb(args, 0);
+        break;
+      case OPS.setFillCMYKColor:
+        state.fillColorSpace = ColorSpace.singletons.cmyk;
+        state.fillColor = ColorSpace.singletons.cmyk.getRgb(args, 0);
+        break;
+      case OPS.setFillRGBColor:
+        state.fillColorSpace = ColorSpace.singletons.rgb;
+        state.fillColor = ColorSpace.singletons.rgb.getRgb(args, 0);
         break;
     }
   }
