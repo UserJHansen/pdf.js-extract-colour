@@ -724,7 +724,6 @@ class PartialEvaluator {
         [imgData],
         optionalContent
       );
-      debugger;
       return;
     }
 
@@ -3174,6 +3173,24 @@ class PartialEvaluator {
                 const type = xobj.dict.get("Subtype");
                 if (!(type instanceof Name)) {
                   throw new FormatError("XObject should have a Name subtype");
+                }
+
+                if (type.name === "Image") {
+                  const width = xobj.dict.get("Width", 0),
+                    height = xobj.dict.get("Height", 0);
+
+                  resetLastChars();
+                  flushTextContentItem();
+                  textContent.items.push({
+                    str: "IMAGEIMAGEIMAGE",
+                    dir: "ltr",
+                    width,
+                    height,
+                    transform: textState.textMatrix,
+                    fontName: "IMAGEIMAGEIMAGE",
+                    hasEOL: false,
+                    fillColor: textState.fillColor,
+                  });
                 }
 
                 if (type.name !== "Form") {
