@@ -4957,7 +4957,7 @@ class CustomEvaluatorPreprocessor extends EvaluatorPreprocessor {
     var state = this.stateManager.state;
     state.textRenderingMode = TextRenderingMode.FILL;
     state.fillColorSpace = ColorSpace.singletons.gray;
-    state.fillColor = [0, 0, 0];
+    state.fillColor = [41, 41, 41];
   }
 
   preprocessCommand(fn, args) {
