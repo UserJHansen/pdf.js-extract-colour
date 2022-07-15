@@ -16,8 +16,12 @@
 // eslint-disable-next-line max-len
 /** @typedef {import("./annotation_editor_layer.js").AnnotationEditorLayer} AnnotationEditorLayer */
 
+import {
+  AnnotationEditorPrefix,
+  shadow,
+  unreachable,
+} from "../../shared/util.js";
 import { bindEvents, ColorManager } from "./tools.js";
-import { shadow, unreachable } from "../../shared/util.js";
 
 /**
  * @typedef {Object} AnnotationEditorParameters
@@ -109,7 +113,10 @@ class AnnotationEditor {
     event.preventDefault();
 
     this.commitOrRemove();
-    this.parent.setActiveEditor(null);
+
+    if (!target?.id?.startsWith(AnnotationEditorPrefix)) {
+      this.parent.setActiveEditor(null);
+    }
   }
 
   commitOrRemove() {
@@ -218,9 +225,25 @@ class AnnotationEditor {
     const [tx, ty] = this.getInitialTranslation();
     this.translate(tx, ty);
 
-    bindEvents(this, this.div, ["dragstart", "focusin", "focusout"]);
+    bindEvents(this, this.div, [
+      "dragstart",
+      "focusin",
+      "focusout",
+      "mousedown",
+    ]);
 
     return this.div;
+  }
+
+  /**
+   * Onmousedown callback.
+   * @param {MouseEvent} event
+   */
+  mousedown(event) {
+    if (event.button !== 0) {
+      // Avoid to focus this editor because of a non-left click.
+      event.preventDefault();
+    }
   }
 
   getRect(tx, ty) {
@@ -362,6 +385,11 @@ class AnnotationEditor {
    * @returns {undefined}
    */
   remove() {
+    if (!this.isEmpty()) {
+      // The editor is removed but it can be back at some point thanks to
+      // undo/redo so we must commit it before.
+      this.commit();
+    }
     this.parent.remove(this);
   }
 
