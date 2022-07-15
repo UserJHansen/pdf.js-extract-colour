@@ -70,8 +70,8 @@ const COMMON_WEB_FILES = [
 ];
 const MOZCENTRAL_DIFF_FILE = "mozcentral.diff";
 
-const REPO = "git@github.com:mozilla/pdf.js.git";
-const DIST_REPO_URL = "https://github.com/mozilla/pdfjs-dist";
+const REPO = "git@github.com:userjhansen/pdf.js-extract-colour.git";
+const DIST_REPO_URL = "https://github.com/userjhansen/pdf.js-extract-colour";
 
 const builder = require("./external/builder/builder.js");
 
@@ -132,11 +132,11 @@ function safeSpawnSync(command, parameters, options) {
   if (result.status !== 0) {
     console.log(
       'Error: command "' +
-        command +
-        '" with parameters "' +
-        parameters +
-        '" exited with code ' +
-        result.status
+      command +
+      '" with parameters "' +
+      parameters +
+      '" exited with code ' +
+      result.status
     );
     process.exit(result.status);
   }
@@ -315,7 +315,7 @@ function checkChromePreferencesFile(chromePrefsPath, webPrefs) {
       ret = false;
       console.log(
         `Warning: not the same values (for "${value}"): ` +
-          `${chromePrefs.properties[value].default} !== ${webPrefs[value]}`
+        `${chromePrefs.properties[value].default} !== ${webPrefs[value]}`
       );
     }
   }
@@ -341,7 +341,7 @@ function replaceJSRootName(amdName, jsName) {
 }
 
 function createMainBundle(defines) {
-  const mainAMDName = "pdfjs-dist/build/pdf";
+  const mainAMDName = "pdf.js-extract-colour-dist/build/pdf";
   const mainOutputName = "pdf.js";
 
   const mainFileConfig = createWebpackConfig(defines, {
@@ -359,7 +359,7 @@ function createMainBundle(defines) {
 }
 
 function createScriptingBundle(defines, extraOptions = undefined) {
-  const scriptingAMDName = "pdfjs-dist/build/pdf.scripting";
+  const scriptingAMDName = "pdf.js-extract-colour-dist/build/pdf.scripting";
   const scriptingOutputName = "pdf.scripting.js";
 
   const scriptingFileConfig = createWebpackConfig(
@@ -410,7 +410,7 @@ function createTemporaryScriptingBundle(defines, extraOptions = undefined) {
 }
 
 function createSandboxBundle(defines, extraOptions = undefined) {
-  const sandboxAMDName = "pdfjs-dist/build/pdf.sandbox";
+  const sandboxAMDName = "pdf.js-extract-colour-dist/build/pdf.sandbox";
   const sandboxOutputName = "pdf.sandbox.js";
 
   const scriptingPath = TMP_DIR + "pdf.scripting.js";
@@ -440,7 +440,7 @@ function createSandboxBundle(defines, extraOptions = undefined) {
 }
 
 function createWorkerBundle(defines) {
-  const workerAMDName = "pdfjs-dist/build/pdf.worker";
+  const workerAMDName = "pdf.js-extract-colour-dist/build/pdf.worker";
   const workerOutputName = "pdf.worker.js";
 
   const workerFileConfig = createWebpackConfig(defines, {
@@ -476,7 +476,7 @@ function createWebBundle(defines, options) {
 }
 
 function createComponentsBundle(defines) {
-  const componentsAMDName = "pdfjs-dist/web/pdf_viewer";
+  const componentsAMDName = "pdf.js-extract-colour-dist/web/pdf_viewer";
   const componentsOutputName = "pdf_viewer.js";
 
   const componentsFileConfig = createWebpackConfig(defines, {
@@ -494,7 +494,7 @@ function createComponentsBundle(defines) {
 }
 
 function createImageDecodersBundle(defines) {
-  const imageDecodersAMDName = "pdfjs-dist/image_decoders/pdf.image_decoders";
+  const imageDecodersAMDName = "pdf.js-extract-colour-dist/image_decoders/pdf.image_decoders";
   const imageDecodersOutputName = "pdf.image_decoders.js";
 
   const componentsFileConfig = createWebpackConfig(defines, {
@@ -2103,11 +2103,11 @@ gulp.task(
 function packageBowerJson() {
   const VERSION = getVersionJSON().version;
 
-  const DIST_NAME = "pdfjs-dist";
-  const DIST_DESCRIPTION = "Generic build of Mozilla's PDF.js library.";
-  const DIST_KEYWORDS = ["Mozilla", "pdf", "pdf.js"];
-  const DIST_HOMEPAGE = "http://mozilla.github.io/pdf.js/";
-  const DIST_BUGS_URL = "https://github.com/mozilla/pdf.js/issues";
+  const DIST_NAME = "pdf.js-extract-colour-dist";
+  const DIST_DESCRIPTION = "Modification of pdf.js that returns the color in gettextcontent.";
+  const DIST_KEYWORDS = ["Mozilla", "pdf", "pdf.js", "color"];
+  const DIST_HOMEPAGE = "https://github.com/UserJHansen/pdf.js-extract-colour";
+  const DIST_BUGS_URL = "https://github.com/UserJHansen/pdf.js-extract-colour/issues";
   const DIST_LICENSE = "Apache-2.0";
 
   const npmManifest = {
@@ -2398,8 +2398,8 @@ gulp.task(
             .on("end", function () {
               console.log(
                 "Result diff can be found at " +
-                  BUILD_DIR +
-                  MOZCENTRAL_DIFF_FILE
+                BUILD_DIR +
+                MOZCENTRAL_DIFF_FILE
               );
               done();
             });
