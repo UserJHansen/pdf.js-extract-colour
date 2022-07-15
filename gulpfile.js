@@ -499,7 +499,8 @@ function createComponentsBundle(defines) {
 }
 
 function createImageDecodersBundle(defines) {
-  const imageDecodersAMDName = "pdf.js-extract-colour-dist/image_decoders/pdf.image_decoders";
+  const imageDecodersAMDName =
+    "pdf.js-extract-colour-dist/image_decoders/pdf.image_decoders";
   const imageDecodersOutputName = "pdf.image_decoders.js";
 
   const componentsFileConfig = createWebpackConfig(defines, {
@@ -2173,10 +2174,12 @@ function packageBowerJson() {
   const VERSION = getVersionJSON().version;
 
   const DIST_NAME = "pdf.js-extract-colour-dist";
-  const DIST_DESCRIPTION = "Modification of pdf.js that returns the color in gettextcontent.";
+  const DIST_DESCRIPTION =
+    "Modification of pdf.js that returns the color in gettextcontent.";
   const DIST_KEYWORDS = ["Mozilla", "pdf", "pdf.js", "color"];
   const DIST_HOMEPAGE = "https://github.com/UserJHansen/pdf.js-extract-colour";
-  const DIST_BUGS_URL = "https://github.com/UserJHansen/pdf.js-extract-colour/issues";
+  const DIST_BUGS_URL =
+    "https://github.com/UserJHansen/pdf.js-extract-colour/issues";
   const DIST_LICENSE = "Apache-2.0";
 
   const npmManifest = {
@@ -2393,7 +2396,7 @@ gulp.task(
     console.log();
     console.log("Done. Push with");
     console.log(
-      "  cd " + DIST_DIR + "; git push --tags " + DIST_REPO_URL + " master"
+      "  cd " + DIST_DIR + "; git push --tags " + DIST_REPO_URL + " main"
     );
     console.log();
     done();
